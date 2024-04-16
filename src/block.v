@@ -11,6 +11,10 @@ module block #(
 
     input  wire [7:0] in_x,
     input  wire [7:0] in_y,
+    input  wire [7:0] in_x_b,
+    input  wire [7:0] in_y_b,
+    input  wire [7:0] in_x_c,
+    input  wire [7:0] in_y_c,
     output wire       out_x,
     output wire       out_y,
 
@@ -24,6 +28,8 @@ module block #(
   reg data_x, data_y;
   reg [7:0] x, y, ab, cx;
 
+  wire c_carry = cx[4];
+  wire b_input = cx[5];
   wire x_async = cx[6];
   wire y_async = cx[7];
 
@@ -33,11 +39,15 @@ module block #(
 
   wire b_y = ab[7];
   wire [2:0] b_bits = ab[6:4];
-  wire b = b_y ? in_y[b_bits] : in_x[b_bits];
+  wire b = b_input
+    ? (b_y ? in_y_b[b_bits] : in_x_b[b_bits])
+    : (b_y ? in_y[b_bits] : in_x[b_bits]);
 
   wire c_y = cx[3];
   wire [2:0] c_bits = cx[2:0];
-  wire c = c_y ? in_y[c_bits] : in_x[c_bits];
+  wire c = c_carry
+    ? (c_y ? in_y_c[c_bits] : in_x_c[c_bits])
+    : (c_y ? in_y[c_bits] : in_x[c_bits]);
 
   wire [2:0] lut_bits = {c, b, a};
   wire lut_x = x[lut_bits];
