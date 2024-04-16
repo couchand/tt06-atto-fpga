@@ -24,7 +24,7 @@ module word (
   assign out_y = {y7, y6, y5, y4, y3, y2, y1, y0};
 
   wire x0, y0;
-  block block0 (
+  block #(.INDEX(0)) block0 (
     .clk(clk),
     .rst_n(rst_n),
     .in_x(in_x),
@@ -39,7 +39,7 @@ module word (
   );
 
   wire x1, y1;
-  block block1 (
+  block #(.INDEX(1)) block1 (
     .clk(clk),
     .rst_n(rst_n),
     .in_x(in_x),
@@ -54,7 +54,7 @@ module word (
   );
 
   wire x2, y2;
-  block block2 (
+  block #(.INDEX(2)) block2 (
     .clk(clk),
     .rst_n(rst_n),
     .in_x(in_x),
@@ -69,7 +69,7 @@ module word (
   );
 
   wire x3, y3;
-  block block3 (
+  block #(.INDEX(3)) block3 (
     .clk(clk),
     .rst_n(rst_n),
     .in_x(in_x),
@@ -84,7 +84,7 @@ module word (
   );
 
   wire x4, y4;
-  block block4 (
+  block #(.INDEX(4)) block4 (
     .clk(clk),
     .rst_n(rst_n),
     .in_x(in_x),
@@ -99,7 +99,7 @@ module word (
   );
 
   wire x5, y5;
-  block block5 (
+  block #(.INDEX(5)) block5 (
     .clk(clk),
     .rst_n(rst_n),
     .in_x(in_x),
@@ -114,7 +114,7 @@ module word (
   );
 
   wire x6, y6;
-  block block6 (
+  block #(.INDEX(6)) block6 (
     .clk(clk),
     .rst_n(rst_n),
     .in_x(in_x),
@@ -129,7 +129,7 @@ module word (
   );
 
   wire x7, y7;
-  block block7 (
+  block #(.INDEX(7)) block7 (
     .clk(clk),
     .rst_n(rst_n),
     .in_x(in_x),

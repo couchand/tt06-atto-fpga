@@ -37,8 +37,24 @@ module unit (
   wire set_ab = state == ST_LOAD_BLOCK && cfg == CFG_AB;
   wire set_cx = state == ST_LOAD_BLOCK && cfg == CFG_CX;
 
-  wire [7:0] x0 = data_in;
-  wire [7:0] y0 = ~data_in;
+  wire [7:0] x_in = data_in;
+  wire [7:0] y_in = ~data_in;
+
+  wire [7:0] x0, y0;
+  word layer0 (
+    .clk(clk),
+    .rst_n(rst_n),
+    .in_x(x_in),
+    .in_y(y_in),
+    .out_x(x0),
+    .out_y(y0),
+    .cfg_in(cfg_in_block),
+    .cfg_addr(cfg_addr_block),
+    .set_x(set_x && layer == 0),
+    .set_y(set_y && layer == 0),
+    .set_ab(set_ab && layer == 0),
+    .set_cx(set_cx && layer == 0)
+  );
 
   wire [7:0] x1, y1;
   word layer1 (
@@ -50,13 +66,45 @@ module unit (
     .out_y(y1),
     .cfg_in(cfg_in_block),
     .cfg_addr(cfg_addr_block),
-    .set_x(set_x),
-    .set_y(set_y),
-    .set_ab(set_ab),
-    .set_cx(set_cx)
+    .set_x(set_x && layer == 1),
+    .set_y(set_y && layer == 1),
+    .set_ab(set_ab && layer == 1),
+    .set_cx(set_cx && layer == 1)
   );
 
-  wire [7:0] res = (x1 & ~o) | (y1 & o);
+  wire [7:0] x2, y2;
+  word layer2 (
+    .clk(clk),
+    .rst_n(rst_n),
+    .in_x(x1),
+    .in_y(y1),
+    .out_x(x2),
+    .out_y(y2),
+    .cfg_in(cfg_in_block),
+    .cfg_addr(cfg_addr_block),
+    .set_x(set_x && layer == 2),
+    .set_y(set_y && layer == 2),
+    .set_ab(set_ab && layer == 2),
+    .set_cx(set_cx && layer == 2)
+  );
+
+  wire [7:0] x3, y3;
+  word layer3 (
+    .clk(clk),
+    .rst_n(rst_n),
+    .in_x(x2),
+    .in_y(y2),
+    .out_x(x3),
+    .out_y(y3),
+    .cfg_in(cfg_in_block),
+    .cfg_addr(cfg_addr_block),
+    .set_x(set_x && layer == 3),
+    .set_y(set_y && layer == 3),
+    .set_ab(set_ab && layer == 3),
+    .set_cx(set_cx && layer == 3)
+  );
+
+  wire [7:0] res = (x3 & ~o) | (y3 & o);
 
   always @(posedge clk) begin
     if (!rst_n) begin

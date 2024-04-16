@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-module block (
+module block #(
+    parameter INDEX = 0
+) (
     input  wire       clk,
     input  wire       rst_n,
 
@@ -37,7 +39,7 @@ module block (
   wire [2:0] c_bits = cx[2:0];
   wire c = c_y ? in_y[c_bits] : in_x[c_bits];
 
-  wire [2:0] lut_bits = {a, b, c};
+  wire [2:0] lut_bits = {c, b, a};
   wire lut_x = x[lut_bits];
   wire lut_y = y[lut_bits];
 
@@ -46,10 +48,10 @@ module block (
 
   always @(posedge clk) begin
     if (!rst_n) begin
-      x <= 0;
+      x <= 8'hAA;
       y <= 0;
-      ab <= 0;
-      cx <= 0;
+      ab <= (INDEX << 4) | INDEX;
+      cx <= INDEX;
       data_x <= 0;
       data_y <= 0;
     end else begin
