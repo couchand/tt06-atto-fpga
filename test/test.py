@@ -8,8 +8,7 @@ from cocotb.triggers import ClockCycles
 @cocotb.test()
 async def test_project(dut):
   dut._log.info("Start")
-  
-  # Our example module doesn't use clock and reset, but we show how to use them here anyway.
+
   clock = Clock(dut.clk, 10, units="us")
   cocotb.start_soon(clock.start())
 
@@ -22,11 +21,59 @@ async def test_project(dut):
   await ClockCycles(dut.clk, 10)
   dut.rst_n.value = 1
 
-  # Set the input values, wait one clock cycle, and check the output
-  dut._log.info("Test")
-  dut.ui_in.value = 20
-  dut.uio_in.value = 30
+  assert dut.uo_out.value == 0
 
+  dut._log.info("Set Bit 0 X")
+  dut.uio_in.value = 0x80
+  await ClockCycles(dut.clk, 1)
+  dut.uio_in.value = 0x88
+  await ClockCycles(dut.clk, 1)
+  dut.uio_in.value = 0x00
   await ClockCycles(dut.clk, 1)
 
-  assert dut.uo_out.value == 50
+  dut._log.info("Set Bit 0 AB")
+  dut.uio_in.value = 0x82
+  await ClockCycles(dut.clk, 1)
+  dut.uio_in.value = 0x10
+  await ClockCycles(dut.clk, 1)
+  dut.uio_in.value = 0x00
+  await ClockCycles(dut.clk, 1)
+
+  dut._log.info("Test our logic")
+  dut.ui_in.value = 0b00000000
+  await ClockCycles(dut.clk, 3)
+  assert dut.uo_out.value == 0
+  dut.ui_in.value = 0b00000001
+  await ClockCycles(dut.clk, 3)
+  assert dut.uo_out.value == 0
+  dut.ui_in.value = 0b00000010
+  await ClockCycles(dut.clk, 3)
+  assert dut.uo_out.value == 0
+  dut.ui_in.value = 0b00000011
+  await ClockCycles(dut.clk, 3)
+  assert dut.uo_out.value == 1
+
+  dut._log.info("Set Bit 0 X")
+  dut.uio_in.value = 0x80
+  await ClockCycles(dut.clk, 1)
+  dut.uio_in.value = 0xEE
+  await ClockCycles(dut.clk, 1)
+  dut.uio_in.value = 0x00
+  await ClockCycles(dut.clk, 1)
+
+  dut._log.info("Test our logic")
+  dut.ui_in.value = 0b00000000
+  await ClockCycles(dut.clk, 3)
+  assert dut.uo_out.value == 0
+  dut.ui_in.value = 0b00000001
+  await ClockCycles(dut.clk, 3)
+  assert dut.uo_out.value == 1
+  dut.ui_in.value = 0b00000010
+  await ClockCycles(dut.clk, 3)
+  assert dut.uo_out.value == 1
+  dut.ui_in.value = 0b00000011
+  await ClockCycles(dut.clk, 3)
+  assert dut.uo_out.value == 1
+
+  await ClockCycles(dut.clk, 10)
+  dut._log.info("Done")
