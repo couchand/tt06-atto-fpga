@@ -121,16 +121,16 @@ module unit (
     end else begin
       data_out <= res;
       if (state == ST_LOAD_OUT) begin
-        o <= cmd;
+        o <= cfg_in;
         state <= ST_INIT;
       end else if (state == ST_LOAD_BLOCK) begin
         state <= ST_INIT;
       end else if (cfg_in[7]) begin
         state <= ST_LOAD_BLOCK;
-        cmd <= cfg_in;
+        cmd <= cfg_in[6:0];
       end else if (cfg_in == 8'h7F) begin
         state <= ST_LOAD_OUT;
-        cmd <= cfg_in;
+        cmd <= cfg_in[6:0];
       end
     end
   end
